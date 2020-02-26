@@ -17,3 +17,7 @@ class CommentForm(forms.ModelForm):  # ModelForm builds the form dynamically bas
         model = Comment
         # Django builds the form based on all model fields by default. Use fields to limit this
         fields = ('name', 'email', 'body')
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()
