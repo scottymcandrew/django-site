@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from django.core.mail import send_mail
 from django.db.models import Count
 from taggit.models import Tag
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from .models import Post, Comment
 from .forms import EmailPostForm, CommentForm, SearchForm
 
@@ -119,6 +119,11 @@ def post_search(request):
                 rank=SearchRank(search_vector, search_query)
             ).filter(rank__gte=0.3).order_by('-rank')
             # filter the results to display only the ones with a rank higher than 0.3.
+
+            # Following code requires trigram on Postgres - which isn't supported on my free Heroku app
+            # -------------------------------------------
+            # results = Post.objects.annotate(
+            #     similarity=TrigramSimilarity('title', query),).filter(similarity__gt=0.3).order_by('-similarity')
 
     return render(request, 'blog/post/search.html',
                   {'form': form,
